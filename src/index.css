@@ -1,0 +1,151 @@
+@import 'bootstrap/dist/css/bootstrap-grid.min.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  font-family: 'Onest', system-ui, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+::selection {
+  background: #0d112c;
+  color: #fff;
+}
+
+h1 {
+  font-size: 68px;
+  font-weight: 500;
+  line-height: 1.11;
+  color: #090826;
+}
+
+h2 {
+  font-size: 52px;
+  font-weight: 500;
+  line-height: 1.15;
+  color: #090826;
+}
+
+h3 {
+  font-size: 42px;
+  line-height: 1.4;
+  color: #090826;
+  font-weight: 500;
+}
+
+.container {
+  max-width: 1240px;
+}
+
+h4 {
+  font-size: 26px;
+  font-weight: 500;
+  color: #090826;
+  line-height: 1.4;
+}
+
+p {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #314259;
+}
+
+a {
+  text-decoration: none;
+  color: #808080;
+  transition: all 0.3s ease;
+}
+a:hover {
+  color: #090826;
+}
+
+.btn-all {
+  border-radius: 100px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff !important;
+  padding: 13px 21px;
+  background: linear-gradient(130deg, #7f8bf8 0%, #3743b7 100%);
+  box-shadow: 0 0 17px rgba(57, 69, 185, 0.6);
+  transition: all 0.3s ease;
+  display: inline-block;
+  background-size: 140% auto;
+  background-position: left center;
+}
+.btn-all:hover {
+  background-position: right center;
+}
+
+.fl-page {
+  overflow: hidden;
+}
+
+/* shaer in action */
+.shaer-action {
+  background-color: #0d112c;
+  padding: 137px 0 139px;
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: auto 100%;
+}
+.shaer-action h2 {
+  color: #fff;
+  font-size: 64px;
+}
+
+.shaer-action p {
+  color: #a4b5cd;
+  margin: 15px 0 21px;
+}
+.shaer-action .btn-all {
+  box-shadow: 0 0 17px rgba(115, 127, 237, 0.6);
+}
+
+@media (max-width: 1024px) {
+  h1 {
+    font-size: 52px;
+  }
+  h2 {
+    font-size: 42px;
+  }
+  h3 {
+    font-size: 26px;
+  }
+  h4 {
+    font-size: 22px;
+  }
+  .btn-all,
+  a,
+  p {
+    font-size: 14px;
+  }
+  .container {
+    padding: 0 40px;
+  }
+  .shaer-action {
+    padding: 80px 0;
+  }
+  .shaer-action h2 {
+    font-size: 52px;
+  }
+}
+
+@media (max-width: 767px) {
+  .container {
+    padding: 0 20px;
+  }
+  .shaer-action {
+    padding: 60px 0 200px;
+    background-position: center bottom;
+    background-size: 100% auto;
+    background-image: url('./assets/saer-action-img-mobile.png') !important;
+  }
+  .shaer-action {
+    padding: 50px 0 420px;
+  }
+  .shaer-action h2 {
+    font-size: 42px;
+  }
+}
