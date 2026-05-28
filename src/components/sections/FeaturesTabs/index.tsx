@@ -11,6 +11,7 @@ import {
 
 const DURATION_MS = 420
 const JUMP_OUT_MS = 200
+const AUTO_ADVANCE_MS = 5000
 
 type Anim =
   | { kind: 'promote'; from: number }
@@ -70,9 +71,15 @@ export default function FeaturesTabs() {
   const [activeIndex, setActiveIndex] = useState(0)
   const [anim, setAnim] = useState<Anim | null>(null)
   const [run, setRun] = useState(false)
-  const timer = useRef<number | null>(null)
+  const animTimer = useRef<number | null>(null)
+  const autoInterval = useRef<number | null>(null)
+  const activeIndexRef = useRef(activeIndex)
+  const busyRef = useRef(false)
 
   const busy = anim !== null
+
+  activeIndexRef.current = activeIndex
+  busyRef.current = busy
   const cards = getCards(activeIndex, anim, run)
   const highlightIndex = getHighlightIndex(activeIndex, anim)
 
@@ -85,10 +92,17 @@ export default function FeaturesTabs() {
     return () => cancelAnimationFrame(id)
   }, [anim])
 
-  const clearTimer = () => {
-    if (timer.current) {
-      window.clearTimeout(timer.current)
-      timer.current = null
+  const clearAnimTimer = () => {
+    if (animTimer.current) {
+      window.clearTimeout(animTimer.current)
+      animTimer.current = null
+    }
+  }
+
+  const clearAutoInterval = () => {
+    if (autoInterval.current) {
+      window.clearInterval(autoInterval.current)
+      autoInterval.current = null
     }
   }
 
@@ -107,17 +121,17 @@ export default function FeaturesTabs() {
 
   const startJump = useCallback(
     (to: number) => {
-      clearTimer()
+      clearAnimTimer()
       setRun(false)
       setAnim({ kind: 'jump', to, phase: 'out' })
 
-      timer.current = window.setTimeout(() => {
+      animTimer.current = window.setTimeout(() => {
         setActiveIndex(to)
         setAnim({ kind: 'jump', to, phase: 'in' })
         requestAnimationFrame(() => {
           requestAnimationFrame(() => setRun(true))
         })
-        timer.current = window.setTimeout(() => {
+        animTimer.current = window.setTimeout(() => {
           endAnim()
         }, DURATION_MS)
       }, JUMP_OUT_MS)
@@ -125,30 +139,50 @@ export default function FeaturesTabs() {
     [endAnim],
   )
 
-  const handleTabClick = useCallback(
+  const goToTab = useCallback(
     (index: number) => {
-      if (index === activeIndex || busy) return
+      const from = activeIndexRef.current
+      if (index === from || busyRef.current) return
 
-      if (isNextTab(activeIndex, index)) {
-        clearTimer()
+      if (isNextTab(from, index)) {
+        clearAnimTimer()
         setRun(false)
-        setAnim({ kind: 'promote', from: activeIndex })
-        timer.current = window.setTimeout(() => finishStep(index), DURATION_MS)
+        setAnim({ kind: 'promote', from })
+        animTimer.current = window.setTimeout(() => finishStep(index), DURATION_MS)
         return
       }
 
-      if (isPrevTab(activeIndex, index)) {
-        clearTimer()
+      if (isPrevTab(from, index)) {
+        clearAnimTimer()
         setRun(false)
-        setAnim({ kind: 'demote', from: activeIndex })
-        timer.current = window.setTimeout(() => finishStep(index), DURATION_MS)
+        setAnim({ kind: 'demote', from })
+        animTimer.current = window.setTimeout(() => finishStep(index), DURATION_MS)
         return
       }
 
       startJump(index)
     },
-    [activeIndex, busy, finishStep, startJump],
+    [finishStep, startJump],
   )
+
+  const handleTabClick = useCallback(
+    (index: number) => {
+      goToTab(index)
+    },
+    [goToTab],
+  )
+
+  useEffect(() => {
+    if (anim !== null) return
+
+    autoInterval.current = window.setInterval(() => {
+      const from = activeIndexRef.current
+      const next = (from + 1) % featureTabs.length
+      goToTab(next)
+    }, AUTO_ADVANCE_MS)
+
+    return () => clearAutoInterval()
+  }, [anim, activeIndex, goToTab])
 
   const deckClass = [
     'features-tabs__deck',

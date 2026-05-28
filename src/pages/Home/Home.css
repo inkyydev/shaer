@@ -433,26 +433,103 @@
 }
 
 .get-started__steps {
+  --get-started-icon-size: 43px;
+  --get-started-gap: 12px;
+  --get-started-line-width: calc(
+    (100% - 4 * var(--get-started-icon-size) - 6 * var(--get-started-gap)) / 3
+  );
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--get-started-gap);
   max-width: 978px;
   margin: 0 auto 40px;
 }
 
 .get-started__step {
-  flex-shrink: 0;
+  flex: 0 0 var(--get-started-icon-size);
+  width: var(--get-started-icon-size);
+  height: var(--get-started-icon-size);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 43px;
-  height: 43px;
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
+}
+
+.get-started__step--pending {
+  flex: 0 0 0;
+  width: 0;
+  min-width: 0;
+  opacity: 0;
+  transform: scale(0.5);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.get-started__step--revealed {
+  flex: 0 0 var(--get-started-icon-size);
+  width: var(--get-started-icon-size);
+  opacity: 1;
+  transform: scale(1);
 }
 
 .get-started__steps-line {
-  flex: 1;
+  flex: 0 0 0;
+  width: 0;
+  min-width: 0;
   height: 2px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.get-started__steps-line--filling,
+.get-started__steps-line--filled {
+  flex: 0 0 var(--get-started-line-width);
+  width: var(--get-started-line-width);
+  min-width: var(--get-started-line-width);
+  max-width: var(--get-started-line-width);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.get-started__steps-line-fill {
+  display: block;
+  height: 100%;
+  width: 0;
   background: #4b47a8;
+}
+
+.get-started__steps-line--filling .get-started__steps-line-fill {
+  animation: get-started-line-fill 0.7s ease-out forwards;
+}
+
+.get-started__steps-line--filled .get-started__steps-line-fill {
+  width: 100%;
+}
+
+@keyframes get-started-line-fill {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.get-started__card-col--pending {
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+}
+
+.get-started__card-col--revealed {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
 }
 
 .get-started__cards {
@@ -1004,10 +1081,16 @@
   .get-started__header {
     margin-bottom: 36px;
   }
-  .get-started__steps-line {
-    flex-basis: 234px;
-    max-width: 234px;
-    min-width: 234px;
+  .get-started__steps {
+    --get-started-line-width: 234px;
+  }
+
+  .get-started__steps-line--filling,
+  .get-started__steps-line--filled {
+    flex: 0 0 var(--get-started-line-width);
+    width: var(--get-started-line-width);
+    min-width: var(--get-started-line-width);
+    max-width: var(--get-started-line-width);
   }
   .get-started__steps {
     margin-bottom: 32px;

@@ -1,54 +1,52 @@
-import { Autoplay } from 'swiper/modules'
-import { Swiper, SwiperSlide } from 'swiper/react'
 import { testimonials } from './helpers'
 import starsImg from '../../../assets/stars-img.svg'
 import avatarImg from '../../../assets/testimonials-img.png'
-import 'swiper/css'
 import './Testimonials.css'
+
+function TestimonialCard({
+  item,
+  ariaHidden = false,
+}: {
+  item: (typeof testimonials)[0]
+  ariaHidden?: boolean
+}) {
+  return (
+    <article className="testimonials__card" aria-hidden={ariaHidden || undefined}>
+      <img className="testimonials__stars" src={starsImg} alt="" aria-hidden />
+      <p>{item.quote}</p>
+      <div className="testimonials__author">
+        <img src={avatarImg} alt="" />
+        <div className="testimonials__author-info">
+          <h4>{item.name}</h4>
+          <p>{item.title}</p>
+        </div>
+      </div>
+    </article>
+  )
+}
 
 export default function Testimonials() {
   return (
     <section className="testimonials">
       <div className="container">
         <h2 data-aos="fade-up">Real Results From Real Businesses</h2>
-        <div className="testimonials__slider" data-aos="fade-up" data-aos-delay="150">
-          <Swiper
-            modules={[Autoplay]}
-            spaceBetween={24}
-            slidesPerView={1}
-            loop
-            speed={1500}
-            autoplay={{
-              delay: 5000,
-              disableOnInteraction: false,
-            }}
-            breakpoints={{
-              768: { slidesPerView: 2 },
-              1150: { slidesPerView: 4 },
-              1400: { slidesPerView: 4 },
-            }}
-          >
+        <div
+          className="testimonials__marquee"
+          data-aos="fade-up"
+          data-aos-delay="150"
+        >
+          <div className="testimonials__marquee-track">
             {testimonials.map((item) => (
-              <SwiperSlide key={item.id}>
-                <div className="testimonials__card">
-                  <img
-                    className="testimonials__stars"
-                    src={starsImg}
-                    alt=""
-                    aria-hidden
-                  />
-                  <p>{item.quote}</p>
-                  <div className="testimonials__author">
-                    <img src={avatarImg} alt="" />
-                    <div className="testimonials__author-info">
-                      <h4>{item.name}</h4>
-                      <p>{item.title}</p>
-                    </div>
-                  </div>
-                </div>
-              </SwiperSlide>
+              <TestimonialCard key={item.id} item={item} />
             ))}
-          </Swiper>
+            {testimonials.map((item) => (
+              <TestimonialCard
+                key={`dup-${item.id}`}
+                item={item}
+                ariaHidden
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>
